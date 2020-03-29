@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<!--Daijue Dong, Meme Exchange Website, Date Created: 2/14/20, Last Modified: 3/28/20----->
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Meme Exchange</title>
+		<style media="screen">
+			body{
+				display: flex;
+				min-height: 100vh;
+				width: 100%;
+				padding: 0;
+				margin: 0;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;	
+				background-color: whitesmoke;
+			}
+		</style>	
+	</head>
+
+	<body>
+		
+		<!--ROW ONE OF TABLE， insert profile pic-->
+        <col width=25%>
+        <tr>
+			<th height="100%" bgcolor=black><img src=profile.jpg style="width:180px;height:180px;"></th>
+            <th height="15">
+                <h1><font face="Papyrus">Profile Settings</font></h1>
+				<h5><font face="Papyrus">NewAccount</font></h5>
+			</th>
+        </tr>
+		
+		<section>
+			<font face="Papyrus" size="3">username</font>
+			<input name="username" id="username" />
+		</section>
+		<br/>
+		
+		
+		<section>
+			<section align="left">
+				<input type="file" id="file" name="fileUpload" accept="image/*"/>
+				<button onclick="imgStorage()" id="submit">Submit</button>
+			</section>
+			<br/>
+		
+			<div id="profileEdit" class="collapse">
+				<form> <!--action="/upload" method="POST">  -->
+				</form>
+				<form> <!--action = "/profileform" method="POST" autocomplete="off">-->
+					<section>
+						<label>
+							<font face="Papyrus" size="3">First Name</font>
+						</label> 
+						<input name="first-name" id="firstName" />
+					</section>
+					
+					<section>
+						<label>
+							<font face="Papyrus" size="3">Last Name</font>
+						</label> 
+						<input name="last-name" id="lastName" />
+					</section>
+					
+					
+					<p><label>
+							<font face="Papyrus" size="3">Please enter your bio: </font>
+						</label><br/>
+					</p>
+					<textarea cols="30" rows="8" name="bio" id="bio" style="margin: 0px; width: 615px; height 30px;">What type of memer are you?</textarea>
+					
+					<br/>
+				<button onclick="profileEdit()">Save</button>
+				</form>
+				
+				<br/><br/><br/>
+			</div>
+		</section>
+	</body>
+	
+	<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-storage.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-auth.js"></script>
+	<script>
+		// Your web app's Firebase configuration
+		var firebaseConfig = {
+			apiKey: "AIzaSyAzaJ2JLSRSyjFkTcsQWE1mCBQ0ZqrUAKg",
+			authDomain: "meme-marketplace-auth.firebaseapp.com",
+			databaseURL: "https://meme-marketplace-auth.firebaseio.com",
+			projectId: "meme-marketplace-auth",
+			storageBucket: "meme-marketplace-auth.appspot.com",
+			messagingSenderId: "800243971683",
+			appId: "1:800243971683:web:d17e0dc768bc038ce6ea56",
+			measurementId: "G-8JWEM1E8Q2"
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		console.log(firebase);
+		
+		function getFile(username){
+		
+			//file chosen through html
+			var uploadFile = document.getElementById('fileButton').files[0];
+			//uploadFile = document.getElementById('submit').setAttribute('disabled', 'true');
+			imgStorage(username, uploadFile);
+			
+			//confirmation on upload
+			document.getElementById('submit').innerHTML = "Uploaded!";
+		}
+		
+		
+		function imgStorage(username){
+			//setting unique name for uploaded image: ex: abyssofsnow/profile.png
+			var name = document.getElementById(username) + '/profile.png';	
+			
+			//creating reference to storage, and storage reference
+			var storageRef = firebase.storage().ref();
+			var file = document.querySelector("#file").files[0];
+			var metadata = {
+			  contentType: 'image/jpeg'
+			};
+
+			
+			//uploading file to firebase storage
+			var task = storageRef.child(name).put(file, metadata);
+			task
+			.then(snapshot => snapshot.ref.getDownloadURL())
+			.then(url => {
+			  console.log(url);
+			  document.querySelector("#image").src = url;
+			})
+			.catch(console.error);
+			
+			document.getElementById('submit').innerHTML = "Uploaded!";
+		}
+	
+	</script>
+</html>
